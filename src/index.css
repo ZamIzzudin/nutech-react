@@ -17,3 +17,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.banner-login {
+  background-image: url("/public/assets/login.webp");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #fff1f0;
+}
