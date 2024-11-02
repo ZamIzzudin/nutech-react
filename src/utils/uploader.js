@@ -10,9 +10,9 @@ export default function Uploader(handler) {
     try {
       const file = e.target.files[0];
 
-      const maxSize = 5 * 1024 * 1024;
+      const maxSize = 100 * 1024;
       if (file.size > maxSize) {
-        throw new Error("Ukuran file terlalu besar (maksimal 5MB)");
+        throw new Error("Ukuran file terlalu besar (maksimal 100 kb)");
       }
 
       const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
