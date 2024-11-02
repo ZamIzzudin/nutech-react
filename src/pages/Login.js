@@ -5,12 +5,14 @@ import { useState } from "react";
 import { AuthAction } from "../utils/reducer/auth";
 import { Link } from "react-router-dom";
 
+import Toast from "../components/Toats";
 import Input from "../components/Input";
 
 import Logo from "../assets/Logo.png";
 import { MdAlternateEmail, MdLockOutline } from "react-icons/md";
 
 import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
+import isEmailValid from "../utils/validateEmail";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -18,6 +20,18 @@ export default function Login() {
   const [showPass, setShowPass] = useState(false);
 
   const handleLogin = () => {
+    if (!isEmailValid(form.email))
+      return Toast.fire({
+        icon: "error",
+        title: "Email tidak valid",
+      });
+
+    if (form.password.length < 8)
+      return Toast.fire({
+        icon: "error",
+        title: "Password minimal 8 karakter",
+      });
+
     dispatch(AuthAction.Login(form.email, form.password));
   };
 

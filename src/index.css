@@ -25,3 +25,25 @@ code {
   background-repeat: no-repeat;
   background-color: #fff1f0;
 }
+
+.user-balance {
+  background-image: url("/public/assets/BGSaldo.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.popup-ok {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.popup-cancel {
+  color: gray;
+  font-weight: 600;
+}
+
+.popup-actions {
+  flex-direction: column;
+  gap: 12px;
+}

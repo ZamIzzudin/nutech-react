@@ -6,10 +6,12 @@ import { AuthAction } from "../utils/reducer/auth";
 import { Link } from "react-router-dom";
 
 import Input from "../components/Input";
+import Toast from "../components/Toats";
 
 import Logo from "../assets/Logo.png";
 import { MdAlternateEmail, MdLockOutline, MdPerson } from "react-icons/md";
 import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
+import isEmailValid from "../utils/validateEmail";
 
 export default function Register() {
   const dispatch = useDispatch();
@@ -25,12 +27,29 @@ export default function Register() {
 
   function handleRegister(e) {
     e.preventDefault();
-    if (form.email.includes("@") === false) return alert("Email tidak valid");
+    if (!isEmailValid(form.email))
+      return Toast.fire({
+        icon: "error",
+        title: "Email tidak valid",
+      });
+
+    if (form.first_name.length < 1 || form.last_name.length < 1)
+      return Toast.fire({
+        icon: "error",
+        title: "Nama tidak boleh kosong",
+      });
+
+    if (form.password.length < 8)
+      return Toast.fire({
+        icon: "error",
+        title: "Password minimal 8 karakter",
+      });
 
     if (form.password !== form.pass_confirm)
-      return alert("Password tidak sama");
-
-    if (form.password.length < 8) return alert("Password minimal 8 karakter");
+      return Toast.fire({
+        icon: "error",
+        title: "Password tidak sama",
+      });
 
     dispatch(
       AuthAction.Register(

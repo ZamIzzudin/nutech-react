@@ -13,6 +13,7 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import Transaction from "./pages/Transaction";
 import Topup from "./pages/Topup";
+import Service from "./pages/Service";
 
 import Navbar from "./components/Navbar";
 import Container from "./components/Container";
@@ -42,6 +43,7 @@ export default function AppRouter() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/transaction" element={<Transaction />} />
               <Route path="/topup" element={<Topup />} />
+              <Route path="/service/:id" element={<Service />} />
               <Route
                 path="/login"
                 element={<Navigate to="/" replace={true} />}

@@ -1,6 +1,7 @@
 /** @format */
 
 import { getSessionData, setSessionData } from "../session";
+import Toast from "../../components/Toats";
 import axios from "axios";
 import api from "../api";
 
@@ -35,21 +36,31 @@ export const AuthAction = (() => {
   function Login(email, password) {
     return async (dispatch) => {
       try {
-        const { data } = await api.login(email, password);
+        const response = await api.login(email, password);
 
+        if (response.data.status !== 0) return new Error(response);
+
+        const expiresIn = 8 * 60 * 60 * 1000;
         const payload = {
-          token: data.data.token,
+          token: response.data.data.token,
+          expiresAt: new Date().getTime() + expiresIn,
         };
 
         setSessionData("auth", JSON.stringify(payload));
-        axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${payload.token}`;
 
         dispatch({
           type: type.LOGIN,
           payload,
         });
       } catch (err) {
-        console.error(err);
+        Toast.fire({
+          icon: "error",
+          title: err.response.data.message || "Gagal Melakukan Login",
+        });
+        console.log(err);
       }
     };
   }
@@ -64,22 +75,30 @@ export const AuthAction = (() => {
           password
         );
 
-        if (response.status !== 0) return new Error(response.message);
+        if (response.data.status !== 0) return new Error(response);
 
-        const { data } = await api.login(email, password);
+        const response_login = await api.login(email, password);
+        const expiresIn = 8 * 60 * 60 * 1000;
 
         const payload = {
-          token: data.data.token,
+          token: response_login.data.data.token,
+          expiresAt: new Date().getTime() + expiresIn,
         };
 
         setSessionData("auth", JSON.stringify(payload));
-        axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${payload.token}`;
 
         dispatch({
           type: type.LOGIN,
           payload,
         });
       } catch (err) {
+        Toast.fire({
+          icon: "error",
+          title: err.response.data.message || "Gagal Melakukan Registrasi",
+        });
         console.error(err);
       }
     };
@@ -90,6 +109,18 @@ export const AuthAction = (() => {
       const data = JSON.parse(getSessionData("auth"));
 
       if (!data?.token) return;
+
+      const currentTime = new Date().getTime();
+      if (currentTime > data.expiresAt) {
+        setSessionData("auth", JSON.stringify({}));
+        delete axios.defaults.headers.common["Authorization"];
+
+        dispatch({
+          type: type.LOGOUT,
+        });
+
+        return;
+      }
 
       axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
 
@@ -107,6 +138,10 @@ export const AuthAction = (() => {
 
       dispatch({
         type: type.LOGOUT,
+      });
+
+      dispatch({
+        type: "RESET_PROFILE",
       });
     };
   }
