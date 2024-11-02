@@ -1,3 +1,15 @@
+/**
+ * eslint-disable jsx-a11y/alt-text
+ *
+ * @format
+ */
+
+/**
+ * eslint-disable jsx-a11y/alt-text
+ *
+ * @format
+ */
+
 /** @format */
 
 import { useState } from "react";
@@ -14,5 +26,5 @@ export default function Image(props) {
     return fallback;
   }
 
-  return <img onError={handleError} {...props} />;
+  return <img onError={handleError} alt={props.alt || ""} {...props} />;
 }
